@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+  namespace: app-database
+data:
+  database.host: "mysql-service.app-database.svc.cluster.local"
+  database.name: "mydb"
+  app.port: "5000"
+  app.debug: "false"

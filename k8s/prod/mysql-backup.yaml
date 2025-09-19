@@ -1,0 +1,27 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: mysql-backup
+  namespace: app-database
+spec:
+  schedule: "0 2 * * *"  # Cada día a las 2 AM
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: backup
+            image: mysql:8.0
+            command:
+            - /bin/sh
+            - -c
+            - |
+              mysqldump -h mysql-service -u appuser -puserpassword123! mydb > /backup/backup-$(date +%Y%m%d).sql
+            volumeMounts:
+            - name: backup-storage
+              mountPath: /backup
+          restartPolicy: OnFailure
+          volumes:
+          - name: backup-storage
+            persistentVolumeClaim:
+              claimName: mysql-pvc
